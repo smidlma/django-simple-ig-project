@@ -1,0 +1,108 @@
+{% extends 'app/base.html' %} {% block title %} Home Feed {% endblock title %}
+{% block body %} {% for post in posts %}
+<div class="card shadow-sm" style="margin: auto; max-width: 500px">
+  <div class="card-header">
+    <img
+      src="{{post.user.avatar.url}}"
+      alt="avatar"
+      style="
+        float: left;
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 50%;
+      "
+    />
+    <span>
+      <div>
+        <a href="{% url 'profile' post.user.id %}"
+          >@{{post.user.username}}</a
+        >
+      </div>
+      <div>{{post.location}}</div>
+    </span>
+  </div>
+  <img
+    style="
+      float: left;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      align-self: center;
+      padding-top: 15px;
+    "
+    src="{{post.image.url}}"
+    alt="alt"
+  />
+
+  <div class="card-body">
+    <p class="card-text">{{post.text}}</p>
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="btn-group" role="group" aria-label="Basic example">
+         
+
+          {% if post in liked %}
+          <button onclick="unlike('{{post.id}}')" type="button" class="btn btn-outline-danger">
+            <i class="bi bi-suit-heart-fill"></i> {{post.like_set.count}}
+          </button>
+          {% else %}
+          <button onclick="like('{{post.id}}')" type="button" class="btn btn-outline-danger">
+            <i class="bi bi-suit-heart"></i> {{post.like_set.count}}
+          </button>
+          {% endif %}
+       
+        <button type="button" class="btn btn-outline-primary">
+          <i class="bi bi-chat"></i> {{post.comment_set.count}}
+        </button>
+      </div>
+
+      <small class="text-muted">{{post.get_created_at}}</small>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <div class="container">
+      <div class="row"> 
+        <form action="{%url 'comment' post.id %}" method="POST"> {% csrf_token %} 
+            <label for="exampleFormControlTextarea1" class="form-label">Comment:</label>
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="comment" required></textarea>
+          <div class="pt-2"></div>
+          <button type="submit" class="btn btn-primary" style="float: right">
+            Send
+          </button>
+        </form>
+      </div>
+      <div class="pt-2"></div>
+      {% for comment in post.comment_set.all %}
+      <div
+        class="row"
+        style="background-color: white; padding: 10px; border-radius: 5%"
+      >
+        <div class="col-2">
+          <img
+            src="{{comment.user.avatar.url}}"
+            alt="avatar"
+            style="
+              float: left;
+              width: 45px;
+              height: 45px;
+              object-fit: cover;
+              border-radius: 50%;
+            "
+          />
+        </div>
+        <div class="col-10">
+          <div class="text-secondary">   <a href="{% url 'profile' comment.user.id %}"
+            >@{{comment.user.username}}</a
+          ></div>
+          <div>{{comment.text}}</div>
+          <div style="color:#0d6efd;">{{comment.get_created_at}}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="pt-4"></div>
+{% endfor %} {% endblock body %}

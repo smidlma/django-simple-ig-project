@@ -1,0 +1,62 @@
+{% extends 'app/base.html' %} {% block title %} Notifications 
+{% endblock title%} 
+{% block body %} 
+{% for no in notifications %}
+<div class="card shadow-sm" style="margin: auto; max-width: 500px">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-2">
+        <img
+          src="{{no.inicializer.avatar.url}}"
+          alt="Avatar"
+          style="
+            float: left;
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 50%;
+          "
+        />
+      </div>
+      <div class="col-8">
+        {% if no.notification_type == 1 %}
+        <div class="text">
+          <a href="{% url 'profile' no.inicializer.id %}"
+            >@{{no.inicializer.username}}</a
+          >
+          started following you 
+          <div class="text-secondary">{{no.get_created_at}}</div>
+        </div>
+        {% elif no.notification_type == 2 %}
+        <div class="text">
+          <a href="{% url 'profile' no.inicializer.id %}"
+            >@{{no.inicializer.username}}</a
+          >
+          commented: {{no.comment.text}}
+          <div class="text-secondary">{{no.get_created_at}}</div>
+        </div>
+        {% else %}
+        <div class="text">
+          <a href="{% url 'profile' no.inicializer.id %}"
+            >@{{no.inicializer.username}}</a
+          >
+          liked your post:
+          <div class="text-secondary">{{no.get_created_at}}</div>
+        </div>
+        {% endif %}
+      </div>
+      <div class="col-2">
+        {% if no.notification_type == 1 %} {% else %}
+        <img
+          src="{{no.post.image.url}}"
+          alt=""
+          style="float: left; width: 45px; height: 45px; object-fit: cover"
+        />
+
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pt-4"></div>
+{% endfor %} {% endblock body %}
